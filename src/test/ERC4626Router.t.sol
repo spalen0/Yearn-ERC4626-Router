@@ -103,7 +103,7 @@ contract ERC4626Test is DSTestPlus {
         require(underlying.balanceOf(address(this)) == 0);
     }
 
-    function testDepositToVaultNoTo(uint256 amount) public { // @audit rename WhitoutTo
+    function testDepositToVaultNoTo(uint256 amount) public {
         Assume(address(hevm)).assume(amount != 0);
         underlying.mint(address(this), amount);
 
@@ -117,7 +117,7 @@ contract ERC4626Test is DSTestPlus {
         require(underlying.balanceOf(address(this)) == 0);
     }
 
-    function testDepositToVaultNoToOrAmount(uint256 amount) public { // @audit WithoutToAndAmount
+    function testDepositToVaultNoToOrAmount(uint256 amount) public {
         Assume(address(hevm)).assume(amount != 0);
         underlying.mint(address(this), amount);
 
