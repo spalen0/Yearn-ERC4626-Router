@@ -182,7 +182,7 @@ contract ERC4626Test is DSTestPlus {
 
         bytes[] memory data = new bytes[](3);
         data[0] = abi.encodeWithSelector(SelfPermit.selfPermit.selector, underlying, amount, block.timestamp, v, r, s);
-        data[1] = abi.encodeWithSelector(PeripheryPayments.approve.selector, underlying, address(vault), amount); // @audit this can be done before multicall
+        data[1] = abi.encodeWithSelector(PeripheryPayments.approve.selector, underlying, address(vault), amount);
         data[2] = abi.encodeWithSelector(IERC4626Router.depositToVault.selector, vault, amount, owner, amount);
 
         hevm.prank(owner);
@@ -250,9 +250,7 @@ contract ERC4626Test is DSTestPlus {
 
         underlying.approve(address(router), type(uint256).max);
 
-        hevm.prank(address(11));
         router.approve(underlying, address(vault), amount);
-        hevm.prank(address(12));
         router.approve(underlying, address(toVault), amount);
 
         router.depositToVault(vault, amount, address(this), amount);
