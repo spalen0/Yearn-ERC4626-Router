@@ -162,6 +162,8 @@ contract ERC4626RouterInvariantTest is Test {
     Yearn4626Router router;
     IWETH9 weth;
     Handler handler;
+    address approver = address(22);
+    uint256 approverBalance = 1e18;
 
     function setUp() public {
         underlying = new MockERC20("Mock Token", "TKN", 18);
@@ -170,6 +172,14 @@ contract ERC4626RouterInvariantTest is Test {
         router = new Yearn4626Router("TestYearn4626Router", weth);
         handler = new Handler(router, vault, underlying);
 
+        vm.prank(approver);
+        underlying.approve(address(router), type(uint256).max);
+        vm.prank(approver);
+        vault.approve(address(router), type(uint256).max);
+
+        deal(address(underlying), approver, approverBalance);
+        deal(address(vault), approver, approverBalance);
+
         targetContract(address(handler));
     }
 
@@ -177,6 +187,12 @@ contract ERC4626RouterInvariantTest is Test {
         assertEq(underlying.balanceOf(address(router)), 0);
         assertEq(underlying.allowance(address(handler), address(router)), 0);
         assertEq(vault.allowance(address(handler), address(router)), 0);
+        handler.callSummary();
+    }
+
+    function invariant_approverBalance() public {
+        assertEq(underlying.balanceOf(approver), approverBalance);
+        assertEq(vault.balanceOf(approver), approverBalance);
         handler.callSummary();
     }
 }
